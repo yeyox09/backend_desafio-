@@ -4,7 +4,7 @@ on:
   push:
     branches: [ dev ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   test:
@@ -46,6 +46,7 @@ jobs:
         DB: ${{ matrix.db }}
         DB_USER: ${{ matrix.db_user }}
         DB_PASSWORD: ${{ matrix.db_password }}
+        SYSTEM_ENV: GITHUB_WORKFLOW
       run: |
         coverage run --omit=*/tests/* --source=hc manage.py test
     - name: Coveralls
