@@ -8,6 +8,11 @@ class FirstTestCase(TestCase):
         """Ejemplo de test"""
         self.assertEqual(self.test_forzado, 'text initial')
         self.assertTrue(True)
+    
+    def test_segundo_ejemplo(self):
+        """Segundo ejemplo de test"""
+        self.assertEqual(self.test_forzado, 'text initial')
+        self.assertTrue(True)
 
     def tearDown(self):
         ''' Clean data'''
