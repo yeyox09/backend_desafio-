@@ -12,6 +12,6 @@ class FirstTestCase(TestCase):
         """Ejemplo de test"""
         self.assertEqual(self.test_forzado, 'text initial')
 
-        def test_tercer_igual_ejemplo(self):
+    def test_tercer_igual_ejemplo(self):
         """Ejemplo de test"""
         self.assertEqual(True)
