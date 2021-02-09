@@ -3,7 +3,7 @@ Django settings for backend_desafio project.
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '#&m+5d80%(x67zwbbne$*zg8j95=+)e8jap$ulo^f=2m@h1m_9'
@@ -55,12 +55,48 @@ WSGI_APPLICATION = 'backend_desafio.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+
+SYSTEM_ENV = os.environ.get('SYSTEM_ENV', None)
+if SYSTEM_ENV == 'PRODUCTION' or SYSTEM_ENV == 'STAGING':
+    DEBUG = False
+    if SYSTEM_ENV == 'STAGING':
+        DEBUG = True
+    SECRET_KEY = os.environ.get('SECRET_KEY', None)
+    CSRF_COOKIE_SECURE = True
+    DATABASES = {
+        'default': {
+            'ENGINE': os.environ.get('SQL_ENGINE', 'django.db.backends.sqlite3'),
+            'NAME': os.environ.get('POSTGRES_DB', os.path.join(BASE_DIR, 'db.sqlite3')),
+            'USER': os.environ.get('POSTGRES_USER', 'user'),
+            'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'password'),
+            'HOST': os.environ.get('SQL_HOST', 'localhost'),
+            'PORT': os.environ.get('SQL_PORT', '5432'),
+        }
     }
-}
+    # Set Sentry and Error Debug
+    # import sentry_sdk
+elif SYSTEM_ENV == 'GITHUB_WORKFLOW':
+    DEBUG = True
+    SECRET_KEY = 'TESTING_KEY'
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'github_actions',
+            'USER': 'postgres',
+            'PASSWORD': 'postgres',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+        }
+    }
+elif SYSTEM_ENV == 'DEVELOPMENT':
+    DEBUG = True
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
 
 
 # Password validation
